@@ -1,0 +1,63 @@
+Rem * Title  : Model Collision
+Rem * Author : DBS-LB
+Rem * Date   : 1st Sept 99
+
+make object plain 2,100,100
+scale object 2,25,25,25
+position object 2,0,30,100
+
+make object sphere 1,10
+scale object 1,10,10,10
+color object 1,rgb(rnd(255),rnd(255),rnd(255))
+
+yrotate object 1,180
+fix object pivot 1
+
+set object collision on 1
+draw to back
+sync on
+
+while mouseclick()=0
+  cls
+  oldx#=x#
+  oldz#=z#
+  oldangle#=angle#
+  if upkey()=1 then x#=newxvalue(x#,angle#,4.0):z#=newzvalue(z#,angle#,4.0)
+  if downkey()=1 then x#=newxvalue(x#,angle#,-4.0):z#=newzvalue(z#,angle#,-4.0)
+  if leftkey()=1 then angle#=wrapvalue(angle#-10)
+  if rightkey()=1 then angle#=wrapvalue(angle#+10)
+
+  if inkey$()="s"
+     set object collision to spheres 1
+  endif
+
+  if inkey$()="b"
+     set object collision to boxes 1
+  endif
+  if inkey$()="P"
+     set object collision to polygons 1
+  endif
+  if inkey$()="O" then set global collision on
+  if inkey$()="F" then set global collision off
+
+  position object 1,x#,0,z#
+  rotate object 1,0,angle#,0
+  if object hit(1,2)>0
+    ink 0,rgb(255,255,255)
+  else
+    ink rgb(255,255,255),0
+  endif
+
+  if object collision(1,2)>0
+    x#=oldx#
+    z#=oldz#
+    angle#=oldangle#
+  endif
+
+  sync
+  endwhile
+
+set object collision off 1
+
+  
+end
